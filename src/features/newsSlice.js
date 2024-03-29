@@ -8,17 +8,15 @@ const initialState = {
   loadingComments: false,
 };
 
-export const getOneNews = createAsyncThunk(
-  "news/new",
-  async (id, thunkAPI) => {
-    try {
+export const getOneNews = createAsyncThunk("news/new", async (id, thunkAPI) => {
+  try {
+    const response = await fetch(
+      `https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`
+    );
+    const newsData = await response.json();
 
-      const response = await fetch(
-        `https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`
-      );
-      const newsData = await response.json();
-
-      const comments = [];
+    const comments = [];
+    if (newsData.kids) {
       await Promise.all(
         newsData.kids.map(async (commentId) => {
           const commentResponse = await fetch(
@@ -28,13 +26,12 @@ export const getOneNews = createAsyncThunk(
           comments.push(commentData);
         })
       );
-
-      return { news: newsData, comments: comments };
-    } catch (error) {
-      throw error;
     }
+    return { news: newsData, comments: comments };
+  } catch (error) {
+    throw error;
   }
-);
+});
 
 export const getNews = createAsyncThunk("news/getNews", async (_, thunkAPI) => {
   try {
@@ -97,7 +94,7 @@ const newsSlice = createSlice({
       .addCase(getOneNews.rejected, (state, action) => {
         state.loadingComments = false;
         state.error = action.error.message;
-      });
+      })
   },
 });
 

@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
 
 const News = () => {
-  const newsAll = useSelector((state) => state.news);
-  const error = useSelector((state) => state.error);
-  const loading = useSelector((state) => state.loading);
+  const newsAll = useSelector((state) => state.newsSlice.news);
+  const error = useSelector((state) => state.newsSlice.error);
+  const loading = useSelector((state) => state.newsSlice.loading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
